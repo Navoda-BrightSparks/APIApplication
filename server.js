@@ -9,7 +9,9 @@ var mongoose=require('mongoose');//require mongoose to interact with mongodb
 var studentRoute=require('./StudentRoute');//requie our routes
 
 mongoose.promise=global.promise;
-
+//configuring model files
+var studentModel=require('./studentModel');
+var subjectModel=require('./subjectsModel');
 
 //configure app to use bodyParser
 //this will let us get the data from a POST

@@ -1,17 +1,78 @@
 'use strict'
-const express =require('express');
-const mongoose=require('mongoose');
+const express = require('express');
+const mongoose = require('mongoose');
 //requiring models to work with mongodb
-const studentModel=mongoose.model('studentModel'),
-    subjectModel=mongoose.model('subjectModel');
+const studentModel = mongoose.model('studentModel'),
+    subjectModel = mongoose.model('subjectModel');
 //routes for our API
-const Router=express.Router();
-//test route to makesure everithing is working
-Router.get('/',(req,res)=>{
+const Router = express.Router();
+//get all students
+Router.get('/', (req, res) => {
+    //find by studentID
+if(req.query.StudentID){
 
-    res.json({message:'welcome to the API'});
+   studentModel.find({StudentID:req.query.hin}).populate('subjects').exec().then(student=>{
 
+       res.json(student||{});
+   }).catch(err=>{
+
+       res.sendStatus(500);
+   })
+
+
+}
+  else{
+    studentModel.find().populate('subjects').exec().then(students => {
+    res.json(students)
+
+    }).catch(err=>{
+        res.sendStatus(500);
+        console.log(err);
+
+    })}
 })
-//more routes for our api will happen here
-//export this routes to use in server
-module.exports=Router;
+//create new student
+Router.post('/',(req,res)=>{
+  var student=new studentModel(req.body);
+  var date=new Date();
+  var id=date.getTime();
+  student.StudentID=id;
+  student.save().then(student=>{
+
+      res.json(student);
+
+  }).catch(err=>{
+      res.sendStatus(500);
+
+  })})
+    //find student by objectID
+    Router.get('/:id',(req,res)=>{
+    studentModel.findById(req.param.id).populate('subjects').exec().then(student=>{
+
+
+        res.json(student);
+    })
+
+
+    })
+
+    Router.put('/:id',(req,res)=>{
+studentModel.findById(req.param.id,req.body,function (err,response) {
+    if(err){
+
+
+    }
+
+}
+
+)
+
+
+
+
+    })
+
+
+
+//export this routes to use in application
+module.exports = Router;

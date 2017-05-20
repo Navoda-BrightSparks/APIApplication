@@ -8,6 +8,10 @@ const StudentSchema=new Schema({
         type:String
 
     },
+    StudentID:{
+        type:String
+
+    },
     Grade:{
         type:number
 

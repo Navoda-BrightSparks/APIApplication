@@ -9,70 +9,73 @@ const Router = express.Router();
 //get all students
 Router.get('/', (req, res) => {
     //find by studentID
-if(req.query.StudentID){
+    if (req.query.StudentID) {
 
-   studentModel.find({StudentID:req.query.hin}).populate('subjects').exec().then(student=>{
+        studentModel.find({StudentID: req.query.hin}).populate('subjects').exec().then(student => {
 
-       res.json(student||{});
-   }).catch(err=>{
+            res.json(student || {});
+        }).catch(err => {
 
-       res.sendStatus(500);
-   })
+            res.sendStatus(500);
+        })
 
 
-}
-  else{
-    studentModel.find().populate('subjects').exec().then(students => {
-    res.json(students)
+    }
+    else {
+        studentModel.find().populate('subjects').exec().then(students => {
+            res.json(students)
 
-    }).catch(err=>{
-        res.sendStatus(500);
-        console.log(err);
+        }).catch(err => {
+            res.sendStatus(500);
+            console.log(err);
 
-    })}
+        })
+    }
 })
 //create new student
-Router.post('/',(req,res)=>{
-  var student=new studentModel(req.body);
-  var date=new Date();
-  var id=date.getTime();
-  student.StudentID=id;
-  student.save().then(student=>{
+Router.post('/', (req, res) => {
+    var student = new studentModel(req.body);
+    var date = new Date();
+    var id = date.getTime();
+    student.StudentID = id;
+    student.save().then(student => {
 
-      res.json(student);
+        res.json(student);
 
-  }).catch(err=>{
-      res.sendStatus(500);
+    }).catch(err => {
+        res.sendStatus(500);
 
-  })})
-    //find student by objectID
-    Router.get('/:id',(req,res)=>{
-    studentModel.findById(req.param.id).populate('subjects').exec().then(student=>{
+    })
+})
+//find student by objectID
+Router.get('/:id', (req, res) => {
+    studentModel.findById(req.param.id).populate('subjects').exec().then(student => {
 
 
         res.json(student);
     })
 
 
-    })
+})
 
-    Router.put('/:id',(req,res)=>{
-studentModel.findById(req.param.id,req.body,function (err,response) {
-    if(err){
+Router.put('/:id', (req, res) => {
+    studentModel.findByIdAndUpdate(req.param.id, req.body, function (err, response) {
+            if (err) {
+                res.json(err);
 
-
-    }
-
-}
-
-)
-
+            }
+                res.json(response);
+        }
+    )
 
 
+})
+Router.delete('/:id',(req,res)=>{
+  studentModel.findByIdAndRemove(req.param.id,function (err,response) {
 
-    })
+  })
 
-
+})
 
 //export this routes to use in application
 module.exports = Router;
